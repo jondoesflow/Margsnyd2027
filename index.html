@@ -161,6 +161,20 @@
   .bottombar .sum b { font-size: 19px; font-weight: 600; }
   .bottombar .btn { padding: 11px 20px; white-space: nowrap; flex: none; }
 
+  .btn-clear { background: #fff; color: #9b1c20; border: 1.5px solid #e9b9bb; }
+  .btn-clear:hover { background: #fdeeee; border-color: #9b1c20; }
+  .ordering-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 18px 0 4px; }
+  .ordering-row .ordering-for { margin: 0; }
+  .ordering-row .btn-clear { padding: 8px 16px; font-size: 15px; }
+
+  dialog.modal { border: 0; border-radius: var(--radius); padding: 24px; max-width: 420px; width: calc(100% - 32px); box-shadow: 0 10px 40px rgba(0,0,0,.25); color: var(--ink); }
+  dialog.modal::backdrop { background: rgba(0,0,0,.45); }
+  dialog.modal h3 { margin: 0 0 8px; font-size: 20px; font-weight: 600; }
+  dialog.modal p { margin: 0 0 8px; color: var(--muted); }
+  dialog.modal ul { margin: 0 0 8px; padding-left: 20px; font-weight: 500; }
+  dialog.modal .actions { flex-wrap: nowrap; }
+  dialog.modal .actions .btn { flex: 1; padding: 12px 14px; white-space: nowrap; }
+
   .toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: var(--green); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 15px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 40; }
   .toast.show { opacity: 1; }
 
@@ -204,7 +218,10 @@
       </div>
     </div>
 
-    <p class="ordering-for" id="orderingFor"></p>
+    <div class="ordering-row">
+      <p class="ordering-for" id="orderingFor"></p>
+      <button class="btn btn-clear" data-clear-all>Clear all</button>
+    </div>
     <div class="filters" id="filters">
       <span>Show only:</span>
       <button class="filter" data-diet="v" aria-pressed="false"><span class="badge v">V</span> Vegetarian</button>
@@ -237,10 +254,10 @@
           <label for="senderName">Your name</label>
           <input type="text" id="senderName" autocomplete="name" placeholder="Who is sending this order?">
         </div>
-        <div id="reviewWarn"></div>
         <div class="actions">
           <button class="btn btn-primary" id="sendBtn">Send pre-order by email</button>
           <button class="btn btn-secondary" id="copyBtn">Copy order</button>
+          <button class="btn btn-clear" data-clear-all>Clear all</button>
         </div>
         <p class="help">“Send” opens your email app with the order already written, addressed to <b>jon@jondoesflow.com</b>. Just press send. If nothing opens, use “Copy order” and paste it into an email to Jon.</p>
       </div>
@@ -254,6 +271,14 @@
     <a class="btn btn-primary" href="#review-step" style="text-decoration:none">Review &amp; send</a>
   </div>
 </div>
+<dialog class="modal" id="modal" aria-labelledby="modalTitle">
+  <h3 id="modalTitle"></h3>
+  <div id="modalBody"></div>
+  <div class="actions">
+    <button class="btn btn-secondary" id="modalCancel"></button>
+    <button class="btn btn-primary" id="modalOk"></button>
+  </div>
+</dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <footer>
@@ -507,23 +532,61 @@
     return out.join("\n");
   }
 
-  function checkBeforeSend() {
-    var empty = people().filter(function (_, i) { return !personCount(i); });
-    var msgs = [];
-    if (!partyCount()) { msgs.push("Nothing has been chosen yet."); }
-    else if (empty.length) { msgs.push("No food chosen yet for: " + empty.join(", ") + ". You can still send if that’s intended."); }
-    $("reviewWarn").innerHTML = msgs.length ? '<div class="warn">' + esc(msgs.join(" ")) + "</div>" : "";
-    return partyCount() > 0;
+  // ---------- pop-up ----------
+  // Shows a message with two buttons; calls onOk only if the main button is pressed.
+  function modal(opts) {
+    var d = $("modal");
+    $("modalTitle").textContent = opts.title;
+    $("modalBody").innerHTML = opts.body;
+    $("modalOk").textContent = opts.ok;
+    $("modalCancel").textContent = opts.cancel;
+    $("modalOk").className = "btn btn-primary";
+    $("modalOk").onclick = function () { d.close(); opts.onOk(); };
+    $("modalCancel").onclick = function () { d.close(); };
+    if (d.showModal) d.showModal();
+    else if (confirm(opts.title)) opts.onOk();
   }
 
-  $("sendBtn").addEventListener("click", function () {
-    if (!checkBeforeSend()) return;
+  function emptyPeople() { return people().filter(function (_, i) { return !personCount(i); }); }
+
+  // Warns about people with nothing chosen, but always lets the order go.
+  function checkBeforeSend(action, verb) {
+    var empty = emptyPeople();
+    if (!empty.length) { action(); return; }
+    modal({
+      title: empty.length === people().length ? "Nothing has been chosen yet" : "Nothing chosen for " + (empty.length === 1 ? empty[0] : "some people"),
+      body: "<p>These people don’t have any food chosen:</p><ul>" + empty.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") +
+        "</ul><p>You can go back and add something, or " + verb + " anyway.</p>",
+      ok: verb.charAt(0).toUpperCase() + verb.slice(1) + " anyway",
+      cancel: "Go back",
+      onOk: action
+    });
+  }
+
+  function sendEmail() {
     var subject = "NYD 2027 lunch pre-order: " + PARTIES[state.party].label;
     window.location.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(emailText());
+  }
+
+  $("sendBtn").addEventListener("click", function () { checkBeforeSend(sendEmail, "send"); });
+  $("copyBtn").addEventListener("click", function () { checkBeforeSend(copyOrder, "copy"); });
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-clear-all]"), function (b) {
+    b.addEventListener("click", function () {
+      modal({
+        title: "Clear the whole order?",
+        body: "<p>This removes every dish and note for " + esc(PARTIES[state.party].label) + ". It can’t be undone.</p>",
+        ok: "Clear all", cancel: "Keep my order", danger: true,
+        onOk: function () {
+          state.orders = {}; state.notes = {};
+          save(); renderAll();
+          toast("Order cleared");
+        }
+      });
+    });
   });
 
-  $("copyBtn").addEventListener("click", function () {
-    checkBeforeSend();
+  function copyOrder() {
     var text = emailText();
     function fallback() {
       var ta = document.createElement("textarea");
@@ -534,7 +597,7 @@
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(text).then(function () { toast("Order copied. Paste it into an email to Jon"); }, fallback);
     } else fallback();
-  });
+  }
 
   function renderAll() { renderPeople(); renderMenu(); renderReview(); }
 
