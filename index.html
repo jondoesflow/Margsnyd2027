@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New Year's Day Lunch Pre-order</title>
+<meta name="description" content="Family pre-order for New Year's Day lunch at Margherita's, Deal. Friday 1 January 2027, 12pm.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #d42a2f;
+    --green: #2f8a3c;
+    --green-soft: #e8f3e9;
+    --ink: #1a1a1a;
+    --muted: #5d5d5d;
+    --line: #e4ded4;
+    --paper: #fbf8f3;
+    --card: #ffffff;
+    --shadow: 0 1px 2px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.05);
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 130px; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Poppins", system-ui, sans-serif; font-size: 17px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font: inherit; cursor: pointer; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- Header ---------- */
+  header.hero { background: #fff; border-bottom: 4px solid var(--green); text-align: center; padding: 36px 16px 28px; }
+  .wordmark { font-family: "Abril Fatface", serif; font-size: clamp(40px, 9vw, 72px); line-height: 1; margin: 0; letter-spacing: .5px; }
+  .wordmark .apos { color: var(--red); }
+  .tag { color: var(--red); text-transform: uppercase; letter-spacing: .25em; font-size: 14px; margin: 8px 0 22px; }
+  .event { font-size: clamp(22px, 4vw, 30px); font-weight: 500; margin: 0; }
+  .event-meta { margin: 6px 0 0; color: var(--muted); font-size: 18px; }
+  .deadline { display: inline-block; margin-top: 20px; background: var(--green-soft); color: #1d5e27; border-radius: 999px; padding: 10px 20px; font-weight: 500; }
+  .deadline.late { background: #fdeaea; color: #9b1c20; }
+
+  /* ---------- Steps ---------- */
+  .step { padding: 32px 0 8px; }
+  .step-title { display: flex; align-items: center; gap: 14px; margin: 0 0 16px; font-weight: 500; font-size: 22px; }
+  .step-num { flex: none; width: 38px; height: 38px; border-radius: 50%; background: var(--red); color: #fff; display: grid; place-items: center; font-size: 18px; font-weight: 600; }
+
+  .parties { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .party-btn {
+    text-align: left; background: var(--card); border: 2px solid var(--line); border-radius: var(--radius);
+    padding: 16px 18px; box-shadow: var(--shadow); color: var(--ink); transition: border-color .15s, transform .15s;
+  }
+  .party-btn:hover { border-color: var(--green); }
+  .party-btn[aria-pressed="true"] { border-color: var(--green); background: var(--green-soft); }
+  .party-btn strong { display: block; font-weight: 500; font-size: 18px; }
+  .party-btn span { color: var(--muted); font-size: 15px; }
+
+  /* ---------- Sticky bar: people + sections ---------- */
+  .sticky { position: sticky; top: 0; z-index: 20; background: rgba(251,248,243,.97); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+  .people { display: flex; gap: 8px; overflow-x: auto; padding: 12px 0 8px; scrollbar-width: none; }
+  .people::-webkit-scrollbar, .sections::-webkit-scrollbar { display: none; }
+  .person-btn {
+    flex: none; border: 2px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px;
+    padding: 8px 16px; font-weight: 500; display: flex; align-items: center; gap: 8px;
+  }
+  .person-btn[aria-pressed="true"] { background: var(--red); border-color: var(--red); color: #fff; }
+  .person-btn .count { background: var(--green); color: #fff; border-radius: 999px; font-size: 13px; min-width: 22px; height: 22px; display: grid; place-items: center; padding: 0 6px; }
+  .person-btn[aria-pressed="true"] .count { background: #fff; color: var(--red); }
+  .sections { display: flex; gap: 6px; overflow-x: auto; padding: 0 0 10px; scrollbar-width: none; }
+  .sections a { flex: none; color: var(--muted); text-decoration: none; font-size: 14px; padding: 4px 10px; border-radius: 999px; background: #fff; border: 1px solid var(--line); }
+  .sections a:hover { color: var(--red); border-color: var(--red); }
+
+  .ordering-for { margin: 18px 0 4px; font-size: 20px; }
+  .ordering-for b { color: var(--red); font-weight: 600; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0 0; font-size: 15px; color: var(--muted); }
+  .filter { border: 1.5px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px; font-size: 14px; color: var(--ink); display: inline-flex; gap: 6px; align-items: center; }
+  .filter[aria-pressed="true"] { border-color: var(--green); background: var(--green-soft); }
+
+  /* ---------- Menu ---------- */
+  .menu-section { margin-top: 34px; }
+  .menu-section h2 {
+    display: flex; align-items: center; gap: 14px; margin: 0 0 6px;
+    color: var(--red); font-weight: 400; text-transform: uppercase; font-size: clamp(26px, 5vw, 34px); letter-spacing: .02em;
+  }
+  .menu-section h2::after { content: ""; flex: 1; height: 2px; background: var(--green); margin-top: 10px; }
+  .section-note { color: var(--green); margin: 0 0 8px; font-size: 15px; }
+  .items { list-style: none; margin: 0; padding: 0; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .item { padding: 14px 18px; border-bottom: 1px solid var(--line); }
+  .item:last-child { border-bottom: 0; }
+  .item.selected { background: #fffaf0; box-shadow: inset 4px 0 0 var(--red); }
+  .item.swap { background: #fafafa; }
+  .item-head { display: flex; gap: 12px; align-items: flex-start; }
+  .item-main { flex: 1; min-width: 0; }
+  .item-name { font-size: 18px; font-weight: 500; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .item-desc { color: var(--muted); font-size: 15px; margin-top: 2px; }
+  .price { font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; font-size: 17px; padding-top: 2px; }
+  .hidden { display: none !important; }
+
+  .badge { display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; border-radius: 999px; height: 20px; padding: 0 7px; letter-spacing: .03em; }
+  .badge.v { background: #7cc242; color: #fff; }
+  .badge.vg { background: #1d6b2a; color: #fff; }
+  .badge.gf { background: #222; color: #fff; }
+  .badge.df { background: #555; color: #fff; }
+
+  .opts { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .opt { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .opt-label { font-size: 15px; color: var(--muted); }
+  .opt-label b { color: var(--ink); font-weight: 500; }
+
+  .stepper { display: inline-flex; align-items: center; border: 1.5px solid var(--line); border-radius: 999px; background: #fff; flex: none; }
+  .stepper button { width: 40px; height: 40px; border: 0; background: none; color: var(--red); font-size: 22px; line-height: 1; border-radius: 50%; display: grid; place-items: center; }
+  .stepper button:disabled { color: #ccc; cursor: default; }
+  .stepper button:not(:disabled):hover { background: #fdeeee; }
+  .stepper output { min-width: 26px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .add-btn { flex: none; border: 1.5px solid var(--green); color: var(--green); background: #fff; border-radius: 999px; padding: 7px 18px; font-weight: 500; font-size: 15px; height: 40px; }
+  .add-btn:hover { background: var(--green); color: #fff; }
+
+  .notes-box { margin-top: 30px; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; }
+  .notes-box label { font-weight: 500; display: block; margin-bottom: 6px; }
+  .notes-box p { margin: 0 0 8px; color: var(--muted); font-size: 15px; }
+  textarea, input[type=text] { width: 100%; font: inherit; font-size: 16px; padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); }
+  textarea { min-height: 80px; resize: vertical; }
+  textarea:focus, input:focus { outline: 2px solid var(--green); border-color: transparent; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; color: var(--muted); margin-top: 22px; }
+  .legend span { display: inline-flex; gap: 6px; align-items: center; }
+  .allergy { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+  /* ---------- Review ---------- */
+  .review { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 6px 18px 18px; }
+  .review-person { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .review-person h3 { margin: 0 0 6px; font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; }
+  .review-person h3 .sub { font-weight: 500; font-variant-numeric: tabular-nums; }
+  .review-person ul { margin: 0; padding: 0; list-style: none; }
+  .review-person li { display: flex; justify-content: space-between; gap: 12px; font-size: 16px; padding: 2px 0; }
+  .review-person li span:last-child { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .review-person .none { color: #9b1c20; font-size: 15px; }
+  .review-person .pnotes { color: var(--muted); font-size: 15px; font-style: italic; margin-top: 4px; }
+  .grand { display: flex; justify-content: space-between; font-size: 22px; font-weight: 600; padding: 16px 0 4px; }
+  .grand span:last-child { color: var(--red); font-variant-numeric: tabular-nums; }
+  .sender { margin-top: 16px; }
+  .sender label { font-weight: 500; display: block; margin-bottom: 6px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .btn { border: 0; border-radius: 999px; padding: 14px 26px; font-weight: 500; font-size: 17px; }
+  .btn-primary { background: var(--red); color: #fff; }
+  .btn-primary:hover { background: #b51f24; }
+  .btn-secondary { background: #fff; color: var(--ink); border: 1.5px solid var(--line); }
+  .btn-secondary:hover { border-color: var(--ink); }
+  .help { color: var(--muted); font-size: 14px; margin-top: 12px; }
+  .warn { background: #fff5e0; border: 1px solid #f1d39b; color: #6b4a00; padding: 10px 14px; border-radius: 8px; font-size: 15px; margin-top: 14px; }
+
+  /* ---------- Bottom bar ---------- */
+  .bottombar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: var(--ink); color: #fff;
+    transform: translateY(110%); transition: transform .2s;
+  }
+  .bottombar.show { transform: none; }
+  .bottombar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+  .bottombar .sum { font-size: 15px; line-height: 1.3; }
+  .bottombar .sum b { font-size: 19px; font-weight: 600; }
+  .bottombar .btn { padding: 11px 20px; white-space: nowrap; flex: none; }
+
+  .toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: var(--green); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 15px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 40; }
+  .toast.show { opacity: 1; }
+
+  footer { text-align: center; color: var(--muted); font-size: 14px; padding: 40px 16px 120px; }
+
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    .item { padding: 12px 14px; }
+    .item-name { font-size: 17px; }
+    .stepper button { width: 38px; height: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="wordmark">Margherita<span class="apos">’</span>s</p>
+  <p class="tag">Italian · Deal</p>
+  <h1 class="event">New Year’s Day Family Lunch</h1>
+  <p class="event-meta">Friday 1 January 2027 · 12 noon</p>
+  <div id="deadline" class="deadline"></div>
+</header>
+
+<main class="wrap">
+
+  <section class="step" aria-labelledby="s1">
+    <h2 class="step-title" id="s1"><span class="step-num">1</span> Choose your party</h2>
+    <div class="parties" id="parties"></div>
+  </section>
+
+  <section id="ordering" class="hidden" aria-labelledby="s2">
+    <div class="step" style="padding-bottom:0">
+      <h2 class="step-title" id="s2"><span class="step-num">2</span> Pick each person’s food</h2>
+      <p style="margin:0;color:var(--muted)">Tap a name, then add the dishes that person would like. Switch names at the top any time. Your choices are saved on this device as you go.</p>
+    </div>
+
+    <div class="sticky">
+      <div class="wrap" style="padding:0">
+        <div class="people" id="people" role="group" aria-label="Who are you ordering for?"></div>
+        <nav class="sections" id="sectionNav" aria-label="Menu sections"></nav>
+      </div>
+    </div>
+
+    <p class="ordering-for" id="orderingFor"></p>
+    <div class="filters" id="filters">
+      <span>Show only:</span>
+      <button class="filter" data-diet="v" aria-pressed="false"><span class="badge v">V</span> Vegetarian</button>
+      <button class="filter" data-diet="vg" aria-pressed="false"><span class="badge vg">VG</span> Vegan</button>
+      <button class="filter" data-diet="gf" aria-pressed="false"><span class="badge gf">GF</span> Gluten-free</button>
+    </div>
+
+    <div id="menu"></div>
+
+    <div class="notes-box">
+      <label for="personNotes" id="notesLabel">Notes</label>
+      <p>Allergies, which dish a swap is for, half-and-half pizza, anything the restaurant should know.</p>
+      <textarea id="personNotes" placeholder="e.g. Gluten-free base on my Margherita, please"></textarea>
+    </div>
+
+    <div class="legend">
+      <span><span class="badge v">V</span> Vegetarian</span>
+      <span><span class="badge vg">VG</span> Vegan</span>
+      <span><span class="badge gf">GF</span> Gluten-free</span>
+      <span><span class="badge df">DF</span> Dairy-free</span>
+    </div>
+    <p class="allergy">From the restaurant: please always inform your server of any allergies or intolerances before placing your order. Not all ingredients are listed on the menu and we cannot guarantee the total absence of allergens. Full details of allergens in each dish are available on request.</p>
+
+    <section class="step" id="review-step" aria-labelledby="s3">
+      <h2 class="step-title" id="s3"><span class="step-num">3</span> Check and send</h2>
+      <div class="review">
+        <div id="review"></div>
+        <div class="grand"><span>Party total</span><span id="grandTotal">£0.00</span></div>
+        <div class="sender">
+          <label for="senderName">Your name</label>
+          <input type="text" id="senderName" autocomplete="name" placeholder="Who is sending this order?">
+        </div>
+        <div id="reviewWarn"></div>
+        <div class="actions">
+          <button class="btn btn-primary" id="sendBtn">Send pre-order by email</button>
+          <button class="btn btn-secondary" id="copyBtn">Copy order</button>
+        </div>
+        <p class="help">“Send” opens your email app with the order already written, addressed to <b>jon@jondoesflow.com</b>. Just press send. If nothing opens, use “Copy order” and paste it into an email to Jon.</p>
+      </div>
+    </section>
+  </section>
+</main>
+
+<div class="bottombar" id="bottombar">
+  <div class="wrap">
+    <div class="sum" id="barSum"></div>
+    <a class="btn btn-primary" href="#review-step" style="text-decoration:none">Review &amp; send</a>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<footer>
+  Pre-orders close on Tuesday 1 December 2026.<br>
+  Questions? Email <a href="mailto:jon@jondoesflow.com" style="color:var(--red)">jon@jondoesflow.com</a>
+</footer>
+
+<script src="menu.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var EMAIL = "jon@jondoesflow.com";
+  var DEADLINE = new Date(2026, 11, 1, 23, 59, 59); // 1 December 2026, end of day (local time)
+  var PARTIES = [
+    { label: "Ange and Mick", people: ["Ange", "Mick"] },
+    { label: "Nigel and Sandra", people: ["Nigel", "Sandra"] },
+    { label: "Josh, Amber and Bonnie", people: ["Josh", "Amber", "Bonnie"] },
+    { label: "Ange, Ali, Phil, Tom and Tiggs", people: ["Ange", "Ali", "Phil", "Tom", "Tiggs"] },
+    { label: "Katie, Jon, Esme and Tilly", people: ["Katie", "Jon", "Esme", "Tilly"] }
+  ];
+  var DIET_LABEL = { v: "V", vg: "VG", gf: "GF", df: "DF" };
+  var DIET_NAME = { v: "Vegetarian", vg: "Vegan", gf: "Gluten-free", df: "Dairy-free" };
+
+  // Flatten menu into orderable lines: one per item, or one per option.
+  var LINES = {};
+  window.MENU.forEach(function (sec) {
+    sec.items.forEach(function (item, i) {
+      item.key = sec.id + "/" + i;
+      var opts = item.options || [{ label: null, price: item.price }];
+      item.lines = opts.map(function (o, j) {
+        var key = item.key + (item.options ? "/" + j : "");
+        var line = { key: key, item: item, section: sec, label: o.label, price: o.price,
+          title: item.name + (o.label ? " (" + o.label + ")" : "") };
+        LINES[key] = line;
+        return line;
+      });
+    });
+  });
+
+  var state = { party: null, person: 0, orders: {}, notes: {}, sender: "" };
+  var filter = null;
+
+  // ---------- storage ----------
+  function storeKey(p) { return "nyd2027-party-" + p; }
+  function save() {
+    if (state.party === null) return;
+    try {
+      localStorage.setItem(storeKey(state.party), JSON.stringify({ orders: state.orders, notes: state.notes, sender: state.sender }));
+      localStorage.setItem("nyd2027-last-party", String(state.party));
+    } catch (e) {}
+  }
+  function load(p) {
+    try {
+      var d = JSON.parse(localStorage.getItem(storeKey(p)) || "null");
+      if (d) return d;
+    } catch (e) {}
+    return { orders: {}, notes: {}, sender: "" };
+  }
+
+  // ---------- helpers ----------
+  var $ = function (id) { return document.getElementById(id); };
+  function money(n) { return "£" + n.toFixed(2); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function people() { return PARTIES[state.party].people; }
+  function personOrder(i) { return state.orders[i] || (state.orders[i] = {}); }
+  function personLines(i) {
+    var o = personOrder(i);
+    return Object.keys(LINES).filter(function (k) { return o[k] > 0; }).map(function (k) { return { line: LINES[k], qty: o[k] }; });
+  }
+  function personCount(i) { return personLines(i).reduce(function (s, l) { return s + l.qty; }, 0); }
+  function personTotal(i) { return personLines(i).reduce(function (s, l) { return s + l.qty * l.line.price; }, 0); }
+  function partyTotal() { return people().reduce(function (s, _, i) { return s + personTotal(i); }, 0); }
+  function partyCount() { return people().reduce(function (s, _, i) { return s + personCount(i); }, 0); }
+  function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(function () { t.classList.remove("show"); }, 1800); }
+
+  // ---------- deadline ----------
+  function renderDeadline() {
+    var el = $("deadline");
+    var now = new Date();
+    var days = Math.ceil((DEADLINE - now) / 86400000);
+    if (now > DEADLINE) {
+      el.classList.add("late");
+      el.textContent = "Pre-orders closed on 1 December 2026. Please email Jon directly.";
+    } else if (days <= 1) {
+      el.textContent = "Last day! Please send your pre-order by 1 December 2026";
+    } else {
+      el.textContent = "Please send your pre-order by Tuesday 1 December 2026 (" + days + " days to go)";
+    }
+  }
+
+  // ---------- parties ----------
+  function renderParties() {
+    $("parties").innerHTML = PARTIES.map(function (p, i) {
+      return '<button class="party-btn" data-party="' + i + '" aria-pressed="' + (state.party === i) + '">' +
+        "<strong>" + esc(p.label) + "</strong><span>" + p.people.length + " people</span></button>";
+    }).join("");
+  }
+  $("parties").addEventListener("click", function (e) {
+    var b = e.target.closest(".party-btn");
+    if (!b) return;
+    selectParty(+b.dataset.party, true);
+  });
+
+  function selectParty(i, scroll) {
+    state.party = i;
+    var d = load(i);
+    state.orders = d.orders || {};
+    state.notes = d.notes || {};
+    state.sender = d.sender || "";
+    state.person = 0;
+    $("senderName").value = state.sender;
+    save();
+    renderParties();
+    $("ordering").classList.remove("hidden");
+    renderAll();
+    if (scroll) $("s2").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // ---------- people tabs ----------
+  function renderPeople() {
+    $("people").innerHTML = people().map(function (name, i) {
+      var c = personCount(i);
+      return '<button class="person-btn" data-person="' + i + '" aria-pressed="' + (state.person === i) + '">' +
+        esc(name) + (c ? '<span class="count" aria-label="' + c + ' items">' + c + "</span>" : "") + "</button>";
+    }).join("");
+    $("orderingFor").innerHTML = "Choosing for <b>" + esc(people()[state.person]) + "</b>";
+    $("notesLabel").textContent = "Notes for " + people()[state.person];
+    $("personNotes").value = state.notes[state.person] || "";
+  }
+  $("people").addEventListener("click", function (e) {
+    var b = e.target.closest(".person-btn");
+    if (!b) return;
+    state.person = +b.dataset.person;
+    renderPeople();
+    renderMenu();
+    $("orderingFor").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  // ---------- menu ----------
+  function badges(item) {
+    return (item.diet || []).map(function (d) {
+      return '<span class="badge ' + d + '" title="' + DIET_NAME[d] + '">' + DIET_LABEL[d] + "</span>";
+    }).join("");
+  }
+  function control(line, qty) {
+    var name = esc(line.title);
+    if (!qty) return '<button class="add-btn" data-act="add" data-key="' + line.key + '" aria-label="Add ' + name + '">Add</button>';
+    return '<span class="stepper">' +
+      '<button data-act="dec" data-key="' + line.key + '" aria-label="Remove one ' + name + '">−</button>' +
+      "<output>" + qty + "</output>" +
+      '<button data-act="inc" data-key="' + line.key + '" aria-label="Add another ' + name + '">+</button></span>';
+  }
+  function renderMenu() {
+    var o = personOrder(state.person);
+    $("sectionNav").innerHTML = window.MENU.map(function (s) { return '<a href="#sec-' + s.id + '">' + esc(s.title) + "</a>"; }).join("");
+    $("menu").innerHTML = window.MENU.map(function (sec) {
+      var items = sec.items.map(function (item) {
+        var show = !filter || (item.diet || []).indexOf(filter) >= 0 || (filter === "v" && (item.diet || []).indexOf("vg") >= 0);
+        var selected = item.lines.some(function (l) { return o[l.key] > 0; });
+        var cls = "item" + (selected ? " selected" : "") + (item.swap ? " swap" : "") + (show ? "" : " hidden");
+        var priceText = item.swap ? "+" + item.price.toFixed(2) : item.options ? item.lines.map(function (l) { return l.price.toFixed(2); }).filter(function (v, i, a) { return a.indexOf(v) === i; }).join(" | ") : item.price.toFixed(2);
+        var html = '<li class="' + cls + '"><div class="item-head"><div class="item-main">' +
+          '<div class="item-name">' + esc(item.name) + " " + badges(item) + "</div>" +
+          (item.desc ? '<div class="item-desc">' + esc(item.desc) + "</div>" : "") +
+          "</div>" + '<div class="price">' + priceText + "</div>";
+        if (!item.options) {
+          html += control(item.lines[0], o[item.lines[0].key]) + "</div>";
+        } else {
+          html += '</div><div class="opts">' + item.lines.map(function (l) {
+            return '<div class="opt"><span class="opt-label">' + (item.name === "Calzone" ? "Filling: " : "") + "<b>" + esc(l.label) + "</b> · " + money(l.price) + "</span>" + control(l, o[l.key]) + "</div>";
+          }).join("") + "</div>";
+        }
+        return html + "</li>";
+      }).join("");
+      var anyShown = /class="item(?=[ "])(?![^"]*hidden)/.test(items);
+      return '<section class="menu-section' + (anyShown ? "" : " hidden") + '" id="sec-' + sec.id + '"><h2>' + esc(sec.title) + "</h2>" +
+        (sec.note ? '<p class="section-note">' + esc(sec.note) + "</p>" : "") +
+        '<ul class="items">' + items + "</ul></section>";
+    }).join("");
+  }
+  $("menu").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-act]");
+    if (!b) return;
+    var o = personOrder(state.person), k = b.dataset.key, act = b.dataset.act;
+    o[k] = (o[k] || 0) + (act === "dec" ? -1 : 1);
+    if (o[k] <= 0) delete o[k];
+    save();
+    renderPeople();
+    renderMenu();
+    renderReview();
+    if (act === "add") toast("Added for " + people()[state.person]);
+    // keep focus on the same control after re-render
+    var again = $("menu").querySelector('button[data-key="' + k + '"][data-act="' + (act === "add" ? "inc" : act) + '"]') ||
+                $("menu").querySelector('button[data-key="' + k + '"]');
+    if (again) again.focus({ preventScroll: true });
+  });
+
+  // ---------- filters ----------
+  $("filters").addEventListener("click", function (e) {
+    var b = e.target.closest(".filter");
+    if (!b) return;
+    filter = filter === b.dataset.diet ? null : b.dataset.diet;
+    Array.prototype.forEach.call(document.querySelectorAll(".filter"), function (f) { f.setAttribute("aria-pressed", f.dataset.diet === filter); });
+    renderMenu();
+  });
+
+  // ---------- notes / sender ----------
+  $("personNotes").addEventListener("input", function () { state.notes[state.person] = this.value; save(); renderReview(); });
+  $("senderName").addEventListener("input", function () { state.sender = this.value; save(); });
+
+  // ---------- review ----------
+  function renderReview() {
+    $("review").innerHTML = people().map(function (name, i) {
+      var ls = personLines(i);
+      var note = (state.notes[i] || "").trim();
+      return '<div class="review-person"><h3><span>' + esc(name) + '</span><span class="sub">' + money(personTotal(i)) + "</span></h3>" +
+        (ls.length ? "<ul>" + ls.map(function (l) {
+          return "<li><span>" + l.qty + " × " + esc(l.line.title) + "</span><span>" + money(l.qty * l.line.price) + "</span></li>";
+        }).join("") + "</ul>" : '<div class="none">Nothing chosen yet</div>') +
+        (note ? '<div class="pnotes">Notes: ' + esc(note) + "</div>" : "") + "</div>";
+    }).join("");
+    $("grandTotal").textContent = money(partyTotal());
+    var n = partyCount();
+    $("barSum").innerHTML = "<b>" + money(partyTotal()) + "</b><br>" + n + " item" + (n === 1 ? "" : "s") + " · " + esc(PARTIES[state.party].label);
+    $("bottombar").classList.toggle("show", state.party !== null);
+  }
+
+  function emailText() {
+    var p = PARTIES[state.party];
+    var out = [];
+    out.push("NEW YEAR'S DAY LUNCH PRE-ORDER");
+    out.push("Margherita's, Deal: Friday 1 January 2027, 12pm");
+    out.push("");
+    out.push("Party: " + p.label);
+    if (state.sender.trim()) out.push("Sent by: " + state.sender.trim());
+    out.push("");
+    p.people.forEach(function (name, i) {
+      out.push(name.toUpperCase());
+      var ls = personLines(i);
+      if (!ls.length) out.push("  (nothing chosen)");
+      ls.forEach(function (l) {
+        out.push("  " + l.qty + " x " + l.line.title + " [" + l.line.section.title + "] - " + money(l.qty * l.line.price));
+      });
+      var note = (state.notes[i] || "").trim();
+      if (note) out.push("  Notes: " + note);
+      out.push("  Subtotal: " + money(personTotal(i)));
+      out.push("");
+    });
+    out.push("PARTY TOTAL: " + money(partyTotal()));
+    return out.join("\n");
+  }
+
+  function checkBeforeSend() {
+    var empty = people().filter(function (_, i) { return !personCount(i); });
+    var msgs = [];
+    if (!partyCount()) { msgs.push("Nothing has been chosen yet."); }
+    else if (empty.length) { msgs.push("No food chosen yet for: " + empty.join(", ") + ". You can still send if that’s intended."); }
+    $("reviewWarn").innerHTML = msgs.length ? '<div class="warn">' + esc(msgs.join(" ")) + "</div>" : "";
+    return partyCount() > 0;
+  }
+
+  $("sendBtn").addEventListener("click", function () {
+    if (!checkBeforeSend()) return;
+    var subject = "NYD 2027 lunch pre-order: " + PARTIES[state.party].label;
+    window.location.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(emailText());
+  });
+
+  $("copyBtn").addEventListener("click", function () {
+    checkBeforeSend();
+    var text = emailText();
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); toast("Order copied"); } catch (e) { alert(text); }
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { toast("Order copied. Paste it into an email to Jon"); }, fallback);
+    } else fallback();
+  });
+
+  function renderAll() { renderPeople(); renderMenu(); renderReview(); }
+
+  // ---------- init ----------
+  renderDeadline();
+  renderParties();
+  try {
+    var last = localStorage.getItem("nyd2027-last-party");
+    if (last !== null && PARTIES[+last]) selectParty(+last, false);
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
